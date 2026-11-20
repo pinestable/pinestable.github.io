@@ -1,0 +1,26 @@
+name: Static pages
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions: {}
+jobs:
+  static-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read public PR merge commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init "$RUNNER_TEMP/site"
+          cd "$RUNNER_TEMP/site"
+          git remote add origin https://github.com/pinestable/pinestable.github.io.git
+          git fetch --depth=1 origin "$GITHUB_SHA"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Check static pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/site"
+          python3 tests/test_static_pages.py
