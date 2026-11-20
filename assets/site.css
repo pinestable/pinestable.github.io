@@ -1,0 +1,239 @@
+/* PineStable landing. World: carbon-copy work-order book (T-93 system).
+   The page is one paper order form on a pine ground; each kit is a numbered line
+   with a perforated stub in that kit's ply colour. */
+
+@font-face { font-family: "Archivo"; font-style: normal; font-weight: 100 900;
+  font-display: swap; src: url("fonts/archivo-latin.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 100 700;
+  font-display: swap; src: url("fonts/ibm-plex-sans-latin.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url("fonts/ibm-plex-mono-400-latin.woff2") format("woff2"); }
+
+:root {
+  --pine: #163a33;
+  --pine-2: #1f4d44;
+  --pine-tint: #c4dbd2;   /* text on pine, 8.5:1 */
+  --paper: #fbf9f3;       /* white ply */
+  --rule: #9fb3ab;        /* printed rules on paper */
+  --label: #2f5c52;       /* printed labels on paper, 7.2:1 */
+  --carbon: #26335c;      /* filled-in text */
+  --canary: #f3e6a3;
+  --pink: #f4d5d6;
+  --display: "Archivo", "Arial Narrow", sans-serif;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --page: 72rem;
+  --gutter: clamp(1rem, 3vw, 2rem);
+  --fan: 6px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--pine-2) var(--pine); }
+body {
+  margin: 0; background: var(--pine); color: var(--pine);
+  font-family: var(--sans); font-size: 1rem; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+h1, h2, h3, p, ol, ul, dl, dd { margin: 0; }
+ol, ul { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; height: auto; }
+::selection { background: var(--canary); color: var(--pine); }
+
+a { color: var(--carbon); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--carbon); outline-offset: 3px; border-radius: 2px; }
+.masthead :focus-visible, .site-foot :focus-visible, .skip:focus-visible { outline-color: var(--canary); }
+
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 10; padding: 0.6rem 1rem;
+  background: var(--paper); color: var(--pine); font-weight: 600; }
+.skip:focus { top: 1rem; }
+
+/* Masthead on the pine ground */
+.masthead {
+  max-width: var(--page); margin: 0 auto; padding: 1.1rem var(--gutter) 1.6rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.brand { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--paper); text-decoration: none; }
+.brand-mark { width: 1.9rem; height: 1.9rem; fill: var(--paper); }
+.brand-name { font-family: var(--display); font-weight: 800; font-size: 1.6rem; letter-spacing: -0.01em; line-height: 1; }
+.nav { display: flex; gap: 0.25rem 1.25rem; flex-wrap: wrap; }
+.nav a { color: var(--pine-tint); text-decoration: none; font-size: 0.95rem; padding: 0.7rem 0; display: inline-block; }
+.nav a:hover { color: var(--paper); text-decoration: underline; }
+
+/* The book: paper form with two coloured plies showing at its edge */
+.book {
+  display: block; position: relative; isolation: isolate;
+  max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter);
+}
+.form {
+  position: relative; background: var(--paper); border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(4, 18, 15, 0.3);
+}
+.form::before, .form::after {
+  content: ""; position: absolute; inset: 0; border-radius: 4px; z-index: -1;
+}
+.form::before { background: var(--pink); transform: translate(var(--fan), calc(var(--fan) * -1)); }
+.form::after { background: var(--canary); transform: translate(calc(var(--fan) * 2), calc(var(--fan) * -2)); z-index: -2;
+  box-shadow: 0 24px 48px rgba(4, 18, 15, 0.45), 0 2px 6px rgba(4, 18, 15, 0.3); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .form::before { animation: fan-pink 900ms var(--ease) 120ms both; }
+  .form::after { animation: fan-canary 900ms var(--ease) 120ms both; }
+  @keyframes fan-pink { from { transform: translate(0, 0); } }
+  @keyframes fan-canary { from { transform: translate(0, 0); } }
+}
+
+/* Form header */
+.form-head {
+  display: grid; gap: 1.75rem; padding: clamp(1.5rem, 5vw, 3.25rem) clamp(1.1rem, 4vw, 3rem) 2rem;
+  border-bottom: 3px double var(--pine);
+}
+h1 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4rem); line-height: 0.95; letter-spacing: -0.02em;
+  color: var(--pine); text-wrap: balance; max-width: 22ch;
+}
+.lede { max-width: 60ch; font-size: 1.075rem; color: var(--label); text-wrap: pretty; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.6rem; }
+.actions .btn { flex: 1 1 13rem; }
+@media (min-width: 40em) { .actions .btn { flex: 0 0 auto; } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 3rem;
+  padding: 0.7rem 1.25rem; border-radius: 3px; border: 2px solid var(--pine);
+  font-family: var(--display); font-weight: 700; font-size: 1.05rem; line-height: 1.3;
+  text-decoration: none; text-align: center;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+}
+.btn-primary { background: var(--pine); color: var(--paper); }
+.btn-primary:hover { background: var(--pine-2); border-color: var(--pine-2); }
+.btn-quiet { background: transparent; color: var(--pine); }
+.btn-quiet:hover { background: rgba(22, 58, 51, 0.08); }
+.btn:active { transform: translateY(1px); }
+
+/* Form fields: label over a ruled line, as printed on an order form */
+.fields { display: grid; gap: 0.9rem; align-content: start; }
+.field { border-bottom: 1px solid var(--rule); padding-bottom: 0.45rem; }
+.field dt { font-family: var(--display); font-weight: 700; font-size: 0.8rem; color: var(--label); }
+.field dd { color: var(--carbon); font-size: 1rem; overflow-wrap: anywhere; }
+
+/* Kits ledger */
+.kits { padding: 2rem clamp(1.1rem, 4vw, 3rem) 1rem; }
+.kits-head { display: grid; gap: 0.4rem; margin-bottom: 1.25rem; }
+h2 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.25rem); line-height: 1.05; letter-spacing: -0.01em; color: var(--pine);
+}
+.note { color: var(--label); font-size: 0.92rem; max-width: 62ch; text-wrap: pretty; }
+
+.ledger-cols { display: none; }
+.ledger { border-top: 2px solid var(--pine); }
+.line { border-bottom: 1px solid var(--rule); }
+.line article {
+  display: grid; gap: 0.9rem 1rem; padding: 1.1rem 0 1.4rem;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "stub stub" "cover cover" "body body" "buy buy";
+}
+.stub {
+  grid-area: stub; display: flex; align-items: baseline; gap: 0.4rem;
+  justify-self: start; padding: 0.3rem 0.8rem 0.3rem 0.6rem; background: var(--ply);
+  border-right: 2px dashed rgba(22, 58, 51, 0.45);
+  font-family: var(--display); font-weight: 800; color: var(--pine);
+}
+.stub-label { font-size: 0.8rem; color: var(--label); }
+.stub-no { font-size: 1.35rem; line-height: 1; font-variant-numeric: tabular-nums; }
+
+.line article { isolation: isolate; }
+.cover { grid-area: cover; display: block; position: relative; margin: 8px 8px 0 0; border-radius: 2px;
+  transition: transform 220ms var(--ease); }
+.cover::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 2px;
+  background: var(--ply); transform: translate(8px, -8px);
+  box-shadow: 0 6px 16px rgba(4, 18, 15, 0.16); transition: transform 220ms var(--ease); }
+.cover img { border-radius: 2px; width: 100%; box-shadow: 0 2px 6px rgba(4, 18, 15, 0.25); }
+.line:hover .cover { transform: translateY(-2px); }
+.line:hover .cover::before { transform: translate(11px, -11px); }
+
+.body { grid-area: body; }
+h3 { font-family: var(--display); font-weight: 800; font-size: 1.3rem; line-height: 1.15; color: var(--pine); text-wrap: balance; }
+.body p { margin-top: 0.45rem; max-width: 62ch; color: var(--carbon); text-wrap: pretty; }
+.body .format { font-family: var(--mono); font-size: 0.82rem; color: var(--label); margin-top: 0.6rem; }
+
+.buy { grid-area: buy; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.75rem; }
+.price { font-family: var(--display); font-weight: 800; font-size: 2.1rem; line-height: 1;
+  color: var(--pine); font-variant-numeric: tabular-nums; margin-right: auto; white-space: nowrap; }
+.cur { font-size: 0.95rem; font-weight: 700; color: var(--label); vertical-align: 0.55em; margin-right: 0.1rem; }
+.btn-buy { min-width: 10.5rem; }
+
+/* Footer blocks of the form */
+.form-foot { display: grid; gap: 2rem; padding: 2rem clamp(1.1rem, 4vw, 3rem) clamp(2rem, 5vw, 3rem); border-top: 3px double var(--pine); }
+.block p { margin-top: 0.7rem; max-width: 56ch; color: var(--carbon); text-wrap: pretty; }
+.where { margin-top: 0.8rem; display: grid; gap: 0.2rem; }
+.where li { display: grid; gap: 0.1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--rule); color: var(--carbon); }
+.where-name { font-family: var(--display); font-weight: 700; font-size: 1.1rem; color: var(--pine); }
+
+/* Site footer on the pine ground */
+.site-foot {
+  max-width: var(--page); margin: 0 auto; padding: 2.25rem var(--gutter) 2.75rem;
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center; color: var(--pine-tint);
+}
+.site-foot p { font-family: var(--display); font-weight: 800; font-size: 1.15rem; color: var(--paper); }
+.site-foot ul { display: flex; gap: 1.25rem; }
+.site-foot a { color: var(--pine-tint); display: inline-block; padding: 0.7rem 0; }
+.site-foot a:hover { color: var(--paper); }
+
+/* Tablet and up */
+@media (min-width: 40em) {
+  :root { --fan: 8px; }
+  .line article {
+    grid-template-columns: 4.25rem minmax(0, 15rem) minmax(0, 1fr);
+    grid-template-areas: "stub cover body" "stub cover buy";
+    grid-template-rows: auto 1fr;
+    align-items: start; padding: 1.25rem 0;
+  }
+  .stub { flex-direction: column; align-items: center; justify-self: stretch; align-self: stretch;
+    gap: 0.15rem; padding: 0.8rem 0.3rem; }
+  .stub-no { font-size: 1.6rem; }
+  .buy { align-self: end; }
+  .form-foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-foot #about { grid-column: 1 / -1; }
+}
+
+
+/* Desktop: the full ruled order form */
+@media (min-width: 60em) {
+  .form-head { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: end; gap: 1.75rem 3rem; }
+  .form-head h1 { grid-column: 1 / -1; }
+  .ledger-cols {
+    display: grid; grid-template-columns: 4.25rem 16rem minmax(0, 1fr) 12.5rem; column-gap: 1.5rem;
+    padding: 0 0 0.35rem; font-family: var(--display); font-weight: 700;
+    font-size: 0.8rem; color: var(--label);
+  }
+  .ledger-cols span:first-child { text-align: center; }
+  .ledger-cols .col-kit { grid-column: span 2; }
+  .line article {
+    grid-template-columns: 4.25rem 16rem minmax(0, 1fr) 12.5rem; column-gap: 1.5rem;
+    grid-template-areas: "stub cover body buy"; grid-template-rows: auto;
+  }
+  .buy { flex-direction: column; align-items: stretch; align-self: start; gap: 0.6rem; }
+  .price { margin: 0 0 0.25rem; }
+  .btn-buy { min-width: 0; }
+  .form-foot { grid-template-columns: 1.2fr 1fr 0.8fr; }
+  .form-foot #about { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+@media print {
+  body { background: #fff; }
+  .form, .form::before, .form::after { box-shadow: none; }
+  .form::before, .form::after, .cover::before, .masthead nav, .skip { display: none; }
+  .brand, .brand-name, .site-foot p, .site-foot a { color: var(--pine); }
+  .brand-mark { fill: var(--pine); }
+  .btn-primary { background: none; color: var(--pine); }
+  .line { break-inside: avoid; }
+  .buy a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--mono); font-size: 0.75rem; font-weight: 400; }
+}
