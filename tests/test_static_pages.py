@@ -13,7 +13,26 @@ import json
 root = Path(__file__).resolve().parents[1]
 privacy_hash = 'fdb93667aa06a567da94e4d5de17f5876fe361d61e37ec198266f89841b15dda'
 privacy_links = ['https://gumroad.com/privacy', 'mailto:leon.pinestable@agentmail.to']
+practice_path = 'learning-apps/practice/index.html'
+practice_hash = '4738c1ef65775976f6c81e479e2be968e02b230fb9e111e641c8c262f89850cf'
+practice_links = [
+    '#tasks',
+    '#q01',
+    '#q04',
+    '#q09',
+    '#q15',
+    'https://support.microsoft.com/en-us/excel/protect-a-worksheet',
+    'https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells',
+    'https://support.microsoft.com/en-us/excel/more-on-data-validation',
+    'https://support.microsoft.com/en-gb/excel/functions/sumifs-function?nochrome=true',
+    'https://support.microsoft.com/en-us/excel/excel-functions-by-category',
+    'https://support.microsoft.com/en-us/excel/available-chart-types-in-office',
+    'https://support.microsoft.com/en-us/office/change-the-display-of-chart-axes',
+    'https://support.microsoft.com/en-us/excel/present-your-data-in-a-scatter-chart-or-a-line-chart',
+    '#setup-heading',
+]
 expected = {
+    practice_path: (practice_hash, practice_links),
     'index.html': ('40827437f1aa56fea348e4e462ca9abb79fda0ae44f7c3b045da6120f5b9ab38',
                    None),
     'privacy/index.html': (privacy_hash, privacy_links),
@@ -108,6 +127,100 @@ class Landing(Check):
         if tag not in {'meta', 'link', 'img'}:
             self.stack.append(tag)
 
+# This schema applies only to the registered practice page, never privacy pages.
+class Practice(Check):
+    schema = {
+        'html': {'lang'}, 'head': set(), 'title': set(), 'style': set(),
+        'meta': {'charset', 'name', 'content'}, 'body': set(),
+        'a': {'class', 'href'}, 'header': set(), 'footer': set(),
+        'div': {'class'}, 'h1': set(), 'h2': {'id'}, 'h3': set(),
+        'p': {'class'}, 'section': {'aria-labelledby'},
+        'nav': {'aria-label'}, 'ul': set(), 'ol': set(), 'li': set(),
+        'main': {'id', 'tabindex'}, 'article': {'id', 'aria-labelledby'},
+        'label': {'for', 'class'},
+        'textarea': {'id', 'rows', 'readonly', 'spellcheck'},
+        'details': set(), 'summary': set(), 'code': {'class'},
+        'input': {'type'},
+    }
+
+    def __init__(self):
+        super().__init__()
+        self.ids, self.references, self.articles = set(), [], []
+        self.reveals = self.summaries = self.boxes = self.checkboxes = 0
+
+    def handle_starttag(self, tag, attrs):
+        assert tag in self.schema, f'practice tag: {tag}'
+        a = dict(attrs)
+        assert len(a) == len(attrs), 'practice duplicate attribute'
+        assert set(a) <= self.schema[tag], f'practice attributes: {tag}'
+        if 'id' in a:
+            assert a['id'] not in self.ids, 'practice duplicate id'
+            self.ids.add(a['id'])
+        for key in ('for', 'aria-labelledby'):
+            if key in a:
+                self.references.extend(a[key].split())
+        if tag == 'meta':
+            assert a in [
+                {'charset': 'utf-8'},
+                {'name': 'viewport', 'content': 'width=device-width, initial-scale=1'},
+                {'name': 'referrer', 'content': 'no-referrer'},
+            ] or (set(a) == {'name', 'content'} and a['name'] == 'description'), 'practice meta'
+        if tag == 'a':
+            self.links.append(a['href'])
+            if a['href'].startswith('#'):
+                self.references.append(a['href'][1:])
+        if tag == 'article':
+            self.articles.append(a['id'])
+        if tag == 'details':
+            assert self.stack[-1] == 'article', 'practice reveal nesting'
+            self.reveals += 1
+        if tag == 'summary':
+            assert self.stack[-1] == 'details', 'practice summary nesting'
+            self.summaries += 1
+        if tag == 'textarea':
+            assert a.get('readonly', False) is None and a.get('spellcheck') == 'false', 'practice readonly data'
+            self.boxes += 1
+        if tag == 'input':
+            assert a == {'type': 'checkbox'} and self.stack[-1] == 'label', 'practice checkbox'
+            self.checkboxes += 1
+        if tag not in {'meta', 'input'}:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        assert self.stack and self.stack.pop() == tag, 'practice nesting'
+
+    def handle_data(self, data):
+        if self.stack and self.stack[-1] == 'style':
+            assert not re.search(r'url\s*\(|@import|expression\s*\(|javascript:|\\', data, re.I), 'practice CSS resource'
+
+    def close(self):
+        super().close()
+        assert not self.stack, 'practice unclosed markup'
+        assert set(self.references) <= self.ids, 'practice reference'
+        assert self.articles == ['q01', 'q04', 'q09', 'q15'], 'practice task inventory'
+        assert (self.reveals, self.summaries, self.boxes, self.checkboxes) == (4, 4, 4, 4), 'practice controls'
+
+
+def check_inventory(actual_files, actual_html):
+    assert actual_files == set(manifest) | (set(expected) - {'index.html', 'privacy/index.html'}), 'site inventory'
+    assert actual_html == set(expected), 'HTML inventory'
+
+
+def check_digest(data, digest, filename):
+    assert sha256(data).hexdigest() == digest, f'approved digest: {filename}'
+
+
+def check_markup(filename, text, links):
+    parser = (Landing() if filename == 'index.html' else
+              Practice() if filename == practice_path else Check())
+    parser.feed(text)
+    parser.close()
+    assert not parser.stack, 'unclosed markup'
+    if links is not None:
+        assert parser.links == links, f'exact links: {filename}'
+    return parser
+
+
 manifest = {}
 for line in (root / 'tests/landing.sha256').read_text().splitlines():
     digest, name = line.split()
@@ -121,7 +234,9 @@ for name, digest in manifest.items():
     assert sha256(path.read_bytes()).hexdigest() == digest, name
 actual_files = {p.relative_to(root).as_posix() for p in root.rglob('*')
                 if p.is_file() and p.relative_to(root).parts[0] not in {'.git', '.github', 'tests'}}
-assert actual_files == set(manifest) | (set(expected) - {'index.html', 'privacy/index.html'})
+actual = {p.relative_to(root).as_posix() for p in root.rglob('*.html')
+          if '.git' not in p.relative_to(root).parts}
+check_inventory(actual_files, actual)
 print('PASS complete 27-file landing manifest and exact site inventory')
 css = (root / 'assets/site.css').read_text()
 assert not re.search(r'@import|expression\s*\(|javascript:', css, re.I)
@@ -131,23 +246,15 @@ for value in re.findall(r'url\(([^)]+)\)', css):
     assert resolved.startswith('/assets/') and resolved[1:] in manifest, value
 print('PASS CSS resources are local; no imports or active content')
 
-actual = {p.relative_to(root).as_posix() for p in root.rglob('*.html')
-          if '.git' not in p.relative_to(root).parts}
-assert actual == set(expected), actual
 for filename, (digest, links) in expected.items():
     path = root / filename
     assert not path.is_symlink(), filename
     data = path.read_bytes()
-    assert sha256(data).hexdigest() == digest, filename
+    check_digest(data, digest, filename)
     text = data.decode('utf-8')
     assert text.startswith('<!doctype html>\n')
-    parser = Landing() if filename == 'index.html' else Check()
-    parser.feed(text)
-    parser.close()
-    assert not parser.stack
-    if links is not None:
-        assert parser.links == links
-    else:
+    parser = check_markup(filename, text, links)
+    if links is None:
         assert parser.images == 8
         assert set(parser.fragments) <= parser.ids
         assert '/privacy/' in parser.links
@@ -168,6 +275,47 @@ for filename, (digest, links) in expected.items():
     assert len(re.findall(r'<h1(?:\s[^>]*)?>', text)) == 1
     assert '<html lang="en">' in text
     print('PASS approved SHA-256, static markup and links:', filename)
+
+def rejects(reason, action):
+    try:
+        action()
+    except AssertionError as error:
+        assert reason in str(error), f'wrong failure: {error}; expected {reason}'
+    else:
+        raise AssertionError(f'negative control accepted: {reason}')
+    print('PASS negative control:', reason)
+
+
+# Exercise guards independently so a digest mismatch cannot mask parser/link failures.
+rejects('site inventory', lambda: check_inventory(actual_files | {'unregistered.txt'}, actual))
+rejects('HTML inventory', lambda: check_inventory(actual_files, actual | {'tests/unregistered.html'}))
+practice_data = (root / practice_path).read_bytes()
+practice_text = practice_data.decode('utf-8')
+rejects('approved digest', lambda: check_digest(practice_data + b'\n', practice_hash, practice_path))
+for old, new, reason in [
+    (practice_links[5], 'https://example.com/', 'exact links'),
+    ('<body>', '<body><script></script>', 'practice tag: script'),
+    ('<body>', '<body onload="alert(1)">', 'practice attributes'),
+    ('<style>', '<style>@import "https://example.com/x.css";', 'practice CSS resource'),
+    ('<summary>', '<summary onclick="alert(1)">', 'practice attributes'),
+    ('id="q15"', 'id="q16"', 'practice reference'),
+    ('readonly spellcheck', 'spellcheck', 'practice readonly data'),
+]:
+    assert old in practice_text
+    rejects(reason, lambda old=old, new=new: check_markup(
+        practice_path, practice_text.replace(old, new, 1), practice_links))
+for filename, (digest, links) in expected.items():
+    if digest != privacy_hash:
+        continue
+    data = (root / filename).read_bytes()
+    text = data.decode('utf-8')
+    rejects('approved digest', lambda: check_digest(data + b'\n', digest, filename))
+    rejects('exact links', lambda: check_markup(filename, text.replace(
+        privacy_links[0], 'https://example.com/'), links))
+    # Practice-only markup must still fail the original privacy parser.
+    rejects('details', lambda: check_markup(filename, text.replace(
+        '<body>', '<body><details></details>'), links))
+
 
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self, *args):
