@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Four free Excel workbook exercises with fictional data, worked answers and manual checks for cell protection, validation, conditional totals and chart axes.">
+<meta name="referrer" content="no-referrer">
+<title>Four Excel workbook tasks | Learning Apps</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #20332d; background: #f5f5ee; line-height: 1.65; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: #175d49; text-underline-offset: .2em; }
+a:hover { text-decoration-thickness: .15em; }
+:focus-visible { outline: 3px solid #934900; outline-offset: 4px; }
+.skip { position: absolute; left: 1rem; top: -6rem; background: white; padding: .8rem; z-index: 2; }
+.skip:focus { top: 1rem; }
+header, main, footer { max-width: 58rem; margin: auto; padding: 2rem 1.25rem; }
+header { padding-top: 3rem; }
+.brand, .eyebrow { font-size: .88rem; font-weight: 650; letter-spacing: .04em; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.8rem); line-height: 1.13; max-width: 15ch; margin: 1rem 0; }
+h2 { font-size: 1.6rem; line-height: 1.3; }
+h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+p, article li { max-width: 32rem; text-wrap: pretty; }
+.intro { font-size: 1.15rem; }
+.notice { border-left: 4px solid #647a37; padding: .3rem 1rem; background: #e9eedf; }
+nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; padding: 0; list-style: none; }
+nav a { display: block; padding: .8rem 1rem; border: 1px solid #a7b3a8; border-radius: .4rem; background: white; }
+article { background: white; border: 1px solid #c4cec5; border-radius: .7rem; padding: clamp(1rem, 4vw, 2rem); margin-bottom: 1.5rem; scroll-margin-top: 1rem; }
+article h2 { margin-top: .3rem; }
+label { display: block; font-weight: 600; margin-bottom: .4rem; }
+textarea { width: 100%; min-height: 6rem; resize: vertical; padding: .8rem; font: .95rem/1.65 ui-monospace, monospace; color: #20332d; background: #f6f8f4; border: 1px solid #7b8c80; border-radius: .3rem; white-space: pre; }
+code { font: .95em/1.6 ui-monospace, monospace; overflow-wrap: anywhere; }
+.formula { display: block; max-width: 100%; padding: 1rem; background: #f6f8f4; white-space: pre; overflow-x: auto; overflow-wrap: normal; }
+details { margin-top: 1.5rem; border-top: 1px solid #c4cec5; }
+summary { padding: 1rem .3rem; cursor: pointer; font-weight: 650; color: #175d49; }
+li { margin-bottom: .4rem; }
+.check { display: flex; align-items: start; gap: .6rem; font-weight: normal; margin-top: 1rem; }
+.check input { width: 1.2rem; height: 1.2rem; margin-top: .2rem; flex-shrink: 0; accent-color: #175d49; }
+.sources { font-size: .92rem; }
+footer { border-top: 1px solid #c4cec5; font-size: .92rem; }
+@media (max-width: 35rem) { nav ul { grid-template-columns: 1fr; } header, main, footer { padding: 1.25rem 1rem; } }
+@media print { body { background: white; } nav, .skip, .check { display: none; } article { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#tasks">Skip to the tasks</a>
+<header>
+<div class="brand">Learning Apps / Workbook practice</div>
+<h1>Four Excel tasks to try in your own workbook</h1>
+<p class="intro">Keep an input editable, restrict typed quantities, classify a total and build a chart with two axes. Each free exercise includes fictional data and a worked answer you can compare with your result.</p>
+<section aria-labelledby="setup-heading">
+<h2 id="setup-heading">Before you start</h2>
+<p>You need an existing licensed installation of Excel for Microsoft 365 desktop on Windows. Use English function names, comma formula separators and a decimal point. Start each task on a fresh sheet in a disposable workbook, with calculation set to Automatic.</p>
+<p>To copy a data box, focus it, select all with Ctrl+A and copy with Ctrl+C (Cmd+A and Cmd+C in a Mac browser). Paste into the cell named above it. Tabs separate columns. If the data lands in one column, use Data &gt; Text to Columns with Tab as the delimiter. Check that numbers are numeric and formulas calculate before continuing.</p>
+<div class="notice"><p>This page does not run Excel or grade your workbook; check your result manually.</p></div>
+</section>
+<p>The draft collection contains 20 tasks in total, including the four free tasks Q01, Q04, Q09 and Q15.</p>
+<nav aria-label="Choose a practice task"><ul>
+<li><a href="#q01">Q01 · Leave an input cell editable</a></li>
+<li><a href="#q04">Q04 · Restrict typed quantities</a></li>
+<li><a href="#q09">Q09 · Classify a conditional total</a></li>
+<li><a href="#q15">Q15 · Put a percentage on a secondary axis</a></li>
+</ul></nav>
+</header>
+<main id="tasks" tabindex="-1">
+<article id="q01" aria-labelledby="q01-heading">
+<div class="eyebrow">Q01 / Worksheet controls</div>
+<h2 id="q01-heading">Q01 · Leave an input cell editable</h2>
+<p>Allow changes to B2 while protecting the formula in C2 from edits. Use no password for this disposable exercise.</p>
+<label for="q01-data">Paste into B2 on a fresh sheet</label>
+<textarea id="q01-data" rows="2" readonly spellcheck="false">8	=B2*15</textarea>
+<p>C2 should initially show 120. After protecting the sheet, change B2 to 9 and try to overwrite C2.</p>
+<details><summary>Reveal Q01 worked answer and checks</summary>
+<ol>
+<li>Select B2. Open Format Cells &gt; Protection and clear Locked. Leave C2 locked.</li>
+<li>Choose Review &gt; Protect Sheet. Leave the password blank. Keep both Select locked cells and Select unlocked cells checked so you can select C2 for the attempted edit.</li>
+<li>Change B2 to 9. C2 should show 135. Attempting to overwrite C2 should be blocked.</li>
+</ol>
+<p>Cell locking takes effect when the sheet is protected. The unlocked input can change while the formula continues to calculate. Worksheet protection controls editing; it does not keep confidential data secure.</p>
+<p>To reset, choose Review &gt; Unprotect Sheet and restore B2 to 8.</p>
+</details>
+<p class="sources">Documentation: <a href="https://support.microsoft.com/en-us/excel/protect-a-worksheet">Protect a worksheet</a> (cell locking and sheet permissions).</p>
+<label class="check"><input type="checkbox">I attempted Q01</label>
+</article>
+<article id="q04" aria-labelledby="q04-heading">
+<div class="eyebrow">Q04 / Data entry</div>
+<h2 id="q04-heading">Q04 · Restrict typed quantities</h2>
+<p>Configure empty B2:B6 to accept whole numbers from 1 through 12, inclusive. Use a Stop error alert. Blank cells may remain.</p>
+<label for="q04-data">Paste the header into B1; leave B2:B6 empty</label>
+<textarea id="q04-data" rows="2" readonly spellcheck="false">Quantity</textarea>
+<p>After setting the rule, type each fictional test value directly into B2: 1, 12, 0, then 2.5. Cancel invalid entries. Do not paste the test values: this task checks direct typing only.</p>
+<details><summary>Reveal Q04 worked answer and checks</summary>
+<ol>
+<li>Select B2:B6 and choose Data &gt; Data Validation.</li>
+<li>On Settings, set Allow to Whole number, Data to between, Minimum to 1 and Maximum to 12. Leave Ignore blank checked.</li>
+<li>On Error Alert, enable the error alert after invalid data is entered and choose the Stop style. Confirm the dialog.</li>
+<li>Type the test values into B2 one at a time. Both 1 and 12 should be accepted. Both 0 and 2.5 should trigger the Stop alert; choose Cancel for each rejected entry.</li>
+</ol>
+<p>The whole-number rule rejects fractions, and the inclusive limits exclude zero. Data validation is not a security boundary. Pasting is outside this check.</p>
+<p>To reset the exercise, use a fresh sheet with B2:B6 empty.</p>
+</details>
+<p class="sources">Documentation: <a href="https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells">Apply data validation to cells</a> (Settings and Error Alert); <a href="https://support.microsoft.com/en-us/excel/more-on-data-validation">More on data validation</a> (limitations).</p>
+<label class="check"><input type="checkbox">I attempted Q04</label>
+</article>
+<article id="q09" aria-labelledby="q09-heading">
+<div class="eyebrow">Q09 / Formulas</div>
+<h2 id="q09-heading">Q09 · Classify a conditional total</h2>
+<p>In E2, use IF and SUMIFS to return <code>Target met</code> when the total for North rows with Paid status is at least 70. Otherwise return <code>Below target</code>.</p>
+<label for="q09-data">Paste into A1 on a fresh sheet</label>
+<textarea id="q09-data" rows="5" readonly spellcheck="false">Region	Status	Amount
+North	Paid	40
+North	Open	90
+South	Paid	60
+North	Paid	35</textarea>
+<details><summary>Reveal Q09 worked answer and checks</summary>
+<p id="q09-formula-label">Enter this formula in E2. Focus the formula box and use the arrow keys to scroll horizontally.</p>
+<code class="formula" tabindex="0" role="region" aria-labelledby="q09-formula-label">=IF(SUMIFS(C2:C5,A2:A5,"North",B2:B5,"Paid")&gt;=70,"Target met","Below target")</code>
+<p>The qualifying rows contain 40 and 35. Their total is 75, so E2 should show <code>Target met</code>. SUMIFS requires both conditions to match; it excludes North/Open and South/Paid.</p>
+<p>For another check, change C5 from 35 to 25. The total becomes 65 and E2 should show <code>Below target</code>. Set C5 to 30 to check the boundary: 70 should show <code>Target met</code>. Restore C5 to 35 afterward.</p>
+</details>
+<p class="sources">Documentation: <a href="https://support.microsoft.com/en-gb/excel/functions/sumifs-function?nochrome=true">SUMIFS syntax and criteria</a>; <a href="https://support.microsoft.com/en-us/excel/excel-functions-by-category">Excel functions by category</a> (Logical functions: IF).</p>
+<label class="check"><input type="checkbox">I attempted Q09</label>
+</article>
+<article id="q15" aria-labelledby="q15-heading">
+<div class="eyebrow">Q15 / Charts</div>
+<h2 id="q15-heading">Q15 · Put a percentage on a secondary axis</h2>
+<p>Create a combo chart with Revenue as clustered columns on the primary axis and Margin as a line on the secondary axis. Format the secondary vertical axis as percentages. Title the primary vertical axis Revenue and the secondary vertical axis Margin.</p>
+<label for="q15-data">Paste into A1 on a fresh sheet</label>
+<textarea id="q15-data" rows="4" readonly spellcheck="false">Month	Revenue	Margin
+Jan	1000	0.10
+Feb	1200	0.15
+Mar	900	0.12</textarea>
+<details><summary>Reveal Q15 worked answer and checks</summary>
+<ol>
+<li>Select A1:C4 and choose Insert &gt; Combo &gt; custom combination. Set Revenue to Clustered Column and Margin to Line. Check Secondary Axis for Margin only.</li>
+<li>Select the secondary vertical axis. Choose Format &gt; Current Selection &gt; Format Selection. Under Axis Options &gt; Number, choose Percentage in Category.</li>
+<li>Select the chart and choose Chart Design &gt; Add Chart Element &gt; Axis Titles &gt; Primary Vertical. Select the title box, type Revenue and press Enter.</li>
+<li>Repeat with Axis Titles &gt; Secondary Vertical and type Margin.</li>
+</ol>
+<p>The Revenue columns should represent 1000, 1200 and 900. The Margin line should represent 10%, 15% and 12%. Check that the primary vertical axis is titled Revenue and the secondary vertical axis is titled Margin, with percentage tick labels.</p>
+<p>Revenue and Margin use different units. Read each series against its assigned axis; their heights do not compare the amounts directly.</p>
+</details>
+<p class="sources">Documentation: <a href="https://support.microsoft.com/en-us/excel/available-chart-types-in-office">Available chart types</a> (Combo charts); <a href="https://support.microsoft.com/en-us/office/change-the-display-of-chart-axes">Change the display of chart axes</a> (number formats); <a href="https://support.microsoft.com/en-us/excel/present-your-data-in-a-scatter-chart-or-a-line-chart">Present data in a scatter or line chart</a> (vertical axis titles).</p>
+<label class="check"><input type="checkbox">I attempted Q15</label>
+</article>
+</main>
+<footer>
+<p>These original exercises cover selected workbook skills, with partial coverage of the wider subject. The examples cite Microsoft documentation. Results are expected outcomes for manual comparison.</p>
+<p>The attempt boxes are optional reminders in this page only. The page does not store or send them. Your browser may retain their state while navigating; they are not a saved progress record.</p>
+<a href="#setup-heading">Return to setup</a>
+</footer>
+</body>
+</html>
