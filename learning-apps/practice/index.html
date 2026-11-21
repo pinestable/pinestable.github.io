@@ -21,7 +21,7 @@ header { padding-top: 3rem; }
 h1 { font-size: clamp(2.1rem, 6vw, 3.8rem); line-height: 1.13; max-width: 15ch; margin: 1rem 0; }
 h2 { font-size: 1.6rem; line-height: 1.3; }
 h3 { font-size: 1.1rem; margin-top: 1.5rem; }
-p { max-width: 72ch; }
+p, article li { max-width: 32rem; text-wrap: pretty; }
 .intro { font-size: 1.15rem; }
 .notice { border-left: 4px solid #647a37; padding: .3rem 1rem; background: #e9eedf; }
 nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; padding: 0; list-style: none; }
@@ -31,7 +31,7 @@ article h2 { margin-top: .3rem; }
 label { display: block; font-weight: 600; margin-bottom: .4rem; }
 textarea { width: 100%; min-height: 6rem; resize: vertical; padding: .8rem; font: .95rem/1.65 ui-monospace, monospace; color: #20332d; background: #f6f8f4; border: 1px solid #7b8c80; border-radius: .3rem; white-space: pre; }
 code { font: .95em/1.6 ui-monospace, monospace; overflow-wrap: anywhere; }
-.formula { display: block; padding: 1rem; background: #f6f8f4; }
+.formula { display: block; max-width: 100%; padding: 1rem; background: #f6f8f4; white-space: pre; overflow-x: auto; overflow-wrap: normal; }
 details { margin-top: 1.5rem; border-top: 1px solid #c4cec5; }
 summary { padding: 1rem .3rem; cursor: pointer; font-weight: 650; color: #175d49; }
 li { margin-bottom: .4rem; }
@@ -52,20 +52,21 @@ footer { border-top: 1px solid #c4cec5; font-size: .92rem; }
 <section aria-labelledby="setup-heading">
 <h2 id="setup-heading">Before you start</h2>
 <p>You need an existing licensed installation of Excel for Microsoft 365 desktop on Windows. Use English function names, comma formula separators and a decimal point. Start each task on a fresh sheet in a disposable workbook, with calculation set to Automatic.</p>
-<p>To copy a data box, focus it, select all with Ctrl+A and copy with Ctrl+C. Paste into the cell named above it. Tabs separate columns. If the data lands in one column, use Data &gt; Text to Columns with Tab as the delimiter. Check that numbers are numeric and formulas calculate before continuing.</p>
+<p>To copy a data box, focus it, select all with Ctrl+A and copy with Ctrl+C (Cmd+A and Cmd+C in a Mac browser). Paste into the cell named above it. Tabs separate columns. If the data lands in one column, use Data &gt; Text to Columns with Tab as the delimiter. Check that numbers are numeric and formulas calculate before continuing.</p>
 <div class="notice"><p>This page does not run Excel or grade your workbook; check your result manually.</p></div>
 </section>
+<p>The draft collection contains 20 tasks in total, including the four free tasks Q01, Q04, Q09 and Q15.</p>
 <nav aria-label="Choose a practice task"><ul>
-<li><a href="#q01">Q01 · Leave an input editable</a></li>
+<li><a href="#q01">Q01 · Leave an input cell editable</a></li>
 <li><a href="#q04">Q04 · Restrict typed quantities</a></li>
 <li><a href="#q09">Q09 · Classify a conditional total</a></li>
-<li><a href="#q15">Q15 · Use a secondary chart axis</a></li>
+<li><a href="#q15">Q15 · Put a percentage on a secondary axis</a></li>
 </ul></nav>
 </header>
 <main id="tasks" tabindex="-1">
 <article id="q01" aria-labelledby="q01-heading">
 <div class="eyebrow">Q01 / Worksheet controls</div>
-<h2 id="q01-heading">Leave an input cell editable</h2>
+<h2 id="q01-heading">Q01 · Leave an input cell editable</h2>
 <p>Allow changes to B2 while protecting the formula in C2 from edits. Use no password for this disposable exercise.</p>
 <label for="q01-data">Paste into B2 on a fresh sheet</label>
 <textarea id="q01-data" rows="2" readonly spellcheck="false">8	=B2*15</textarea>
@@ -84,7 +85,7 @@ footer { border-top: 1px solid #c4cec5; font-size: .92rem; }
 </article>
 <article id="q04" aria-labelledby="q04-heading">
 <div class="eyebrow">Q04 / Data entry</div>
-<h2 id="q04-heading">Restrict typed quantities</h2>
+<h2 id="q04-heading">Q04 · Restrict typed quantities</h2>
 <p>Configure empty B2:B6 to accept whole numbers from 1 through 12, inclusive. Use a Stop error alert. Blank cells may remain.</p>
 <label for="q04-data">Paste the header into B1; leave B2:B6 empty</label>
 <textarea id="q04-data" rows="2" readonly spellcheck="false">Quantity</textarea>
@@ -104,8 +105,8 @@ footer { border-top: 1px solid #c4cec5; font-size: .92rem; }
 </article>
 <article id="q09" aria-labelledby="q09-heading">
 <div class="eyebrow">Q09 / Formulas</div>
-<h2 id="q09-heading">Classify a conditional total</h2>
-<p>In E2, use IF and SUMIFS to return <code>Target met</code> when the total for North rows with Paid status is at least 70. Otherwise return <code>Below target</code>. Work out the qualifying total too.</p>
+<h2 id="q09-heading">Q09 · Classify a conditional total</h2>
+<p>In E2, use IF and SUMIFS to return <code>Target met</code> when the total for North rows with Paid status is at least 70. Otherwise return <code>Below target</code>.</p>
 <label for="q09-data">Paste into A1 on a fresh sheet</label>
 <textarea id="q09-data" rows="5" readonly spellcheck="false">Region	Status	Amount
 North	Paid	40
@@ -113,8 +114,8 @@ North	Open	90
 South	Paid	60
 North	Paid	35</textarea>
 <details><summary>Reveal Q09 worked answer and checks</summary>
-<p>Enter this formula in E2:</p>
-<code class="formula">=IF(SUMIFS(C2:C5,A2:A5,"North",B2:B5,"Paid")&gt;=70,"Target met","Below target")</code>
+<p id="q09-formula-label">Enter this formula in E2. Focus the formula box and use the arrow keys to scroll horizontally.</p>
+<code class="formula" tabindex="0" role="region" aria-labelledby="q09-formula-label">=IF(SUMIFS(C2:C5,A2:A5,"North",B2:B5,"Paid")&gt;=70,"Target met","Below target")</code>
 <p>The qualifying rows contain 40 and 35. Their total is 75, so E2 should show <code>Target met</code>. SUMIFS requires both conditions to match; it excludes North/Open and South/Paid.</p>
 <p>For another check, change C5 from 35 to 25. The total becomes 65 and E2 should show <code>Below target</code>. Set C5 to 30 to check the boundary: 70 should show <code>Target met</code>. Restore C5 to 35 afterward.</p>
 </details>
@@ -123,7 +124,7 @@ North	Paid	35</textarea>
 </article>
 <article id="q15" aria-labelledby="q15-heading">
 <div class="eyebrow">Q15 / Charts</div>
-<h2 id="q15-heading">Put a percentage on a secondary axis</h2>
+<h2 id="q15-heading">Q15 · Put a percentage on a secondary axis</h2>
 <p>Create a combo chart with Revenue as clustered columns on the primary axis and Margin as a line on the secondary axis. Format the secondary vertical axis as percentages. Title the primary vertical axis Revenue and the secondary vertical axis Margin.</p>
 <label for="q15-data">Paste into A1 on a fresh sheet</label>
 <textarea id="q15-data" rows="4" readonly spellcheck="false">Month	Revenue	Margin

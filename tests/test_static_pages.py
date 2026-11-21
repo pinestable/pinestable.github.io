@@ -14,7 +14,7 @@ root = Path(__file__).resolve().parents[1]
 privacy_hash = 'fdb93667aa06a567da94e4d5de17f5876fe361d61e37ec198266f89841b15dda'
 privacy_links = ['https://gumroad.com/privacy', 'mailto:leon.pinestable@agentmail.to']
 practice_path = 'learning-apps/practice/index.html'
-practice_hash = '4738c1ef65775976f6c81e479e2be968e02b230fb9e111e641c8c262f89850cf'
+practice_hash = 'ad33f2e8f906636df63b582d86b1f6da9cdd827518a47e98b1509048efcf6deb'
 practice_links = [
     '#tasks',
     '#q01',
@@ -134,12 +134,12 @@ class Practice(Check):
         'meta': {'charset', 'name', 'content'}, 'body': set(),
         'a': {'class', 'href'}, 'header': set(), 'footer': set(),
         'div': {'class'}, 'h1': set(), 'h2': {'id'}, 'h3': set(),
-        'p': {'class'}, 'section': {'aria-labelledby'},
+        'p': {'class', 'id'}, 'section': {'aria-labelledby'},
         'nav': {'aria-label'}, 'ul': set(), 'ol': set(), 'li': set(),
         'main': {'id', 'tabindex'}, 'article': {'id', 'aria-labelledby'},
         'label': {'for', 'class'},
         'textarea': {'id', 'rows', 'readonly', 'spellcheck'},
-        'details': set(), 'summary': set(), 'code': {'class'},
+        'details': set(), 'summary': set(), 'code': {'class', 'tabindex', 'role', 'aria-labelledby'},
         'input': {'type'},
     }
 
@@ -177,6 +177,9 @@ class Practice(Check):
         if tag == 'summary':
             assert self.stack[-1] == 'details', 'practice summary nesting'
             self.summaries += 1
+        if tag == 'code' and a.get('class') == 'formula':
+            assert a == {'class': 'formula', 'tabindex': '0', 'role': 'region',
+                         'aria-labelledby': 'q09-formula-label'}, 'practice formula keyboard access'
         if tag == 'textarea':
             assert a.get('readonly', False) is None and a.get('spellcheck') == 'false', 'practice readonly data'
             self.boxes += 1
@@ -299,6 +302,7 @@ for old, new, reason in [
     ('<style>', '<style>@import "https://example.com/x.css";', 'practice CSS resource'),
     ('<summary>', '<summary onclick="alert(1)">', 'practice attributes'),
     ('id="q15"', 'id="q16"', 'practice reference'),
+    ('tabindex="0"', 'tabindex="-1"', 'practice formula keyboard access'),
     ('readonly spellcheck', 'spellcheck', 'practice readonly data'),
 ]:
     assert old in practice_text
